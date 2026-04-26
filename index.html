@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>ADN Travels - Control Center</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #eef2f6; padding: 20px; }
+        .container { max-width: 750px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-top: 8px solid #003366; position: relative; }
+        
+        /* Estilo del Nuevo Título */
+        .header-title { color: #003366; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 5px; font-weight: 800; letter-spacing: -0.5px; }
+        .brand-badge { background: #003366; color: white; padding: 2px 12px; border-radius: 8px; font-size: 0.9em; }
+        .status-bar { text-align: center; font-size: 12px; font-weight: 600; color: #22c55e; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+        .dot { display: inline-block; width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; margin-right: 5px; animation: pulse 1.5s infinite; }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        h3 { color: #003366; border-bottom: 2px solid #003366; padding-bottom: 5px; margin-top: 25px; }
+        .section { margin-bottom: 15px; padding: 15px; border: 1px solid #d1d9e0; border-radius: 10px; background: #fff; border-left: 5px solid #003366; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        
+        label { display: block; font-weight: bold; margin-top: 8px; font-size: 13px; color: #334155; }
+        input, textarea { width: 100%; padding: 10px; margin-top: 4px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
+        .auto-field { background-color: #f0f7ff; font-weight: bold; color: #003366; border: 1px solid #003366; }
+        
+        button { padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; width: 100%; margin-top: 15px; }
+        .btn-gen { background: #003366; color: white; }
+        .btn-copy { background: #64748b; color: white; font-size: 12px; padding: 8px; width: auto; float: right; margin: 0; }
+        
+        .output-box { margin-top: 15px; padding: 15px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; position: relative; }
+        pre { white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 13px; margin: 10px 0 0 0; color: #1e293b; line-height: 1.5; }
+        .signature { text-align: right; font-size: 12px; color: #94a3b8; margin-top: 20px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="header-title">
+        <span class="brand-badge">ADN</span> Travels Control Center 🚀
+    </h1>
+    <p class="status-bar">
+        <span class="dot"></span> Sistema de Gestión de Reservas Activo
+    </p>
+
+    <div class="section">
+        <label>Hotel / Servicio</label>
+        <input type="text" id="hotel" placeholder="Nombre del Hotel">
+        
+        <label>Número de cotización</label>
+        <input type="text" id="numCot" placeholder="Ej: 2026011250537">
+
+        <div class="grid">
+            <div><label>Fecha IN</label><input type="date" id="fechaIn"></div>
+            <div><label>Fecha OUT</label><input type="date" id="fechaOut"></div>
+        </div>
+
+        <div class="grid-3">
+            <div><label>ADT</label><input type="text" id="adt" placeholder="Cant."></div>
+            <div><label>CHD</label><input type="text" id="chd" placeholder="Cant."></div>
+            <div><label>INF</label><input type="text" id="inf" placeholder="Cant."></div>
+        </div>
+        
+        <label>Tipo de Habitación</label>
+        <textarea id="tipoHab" rows="2" placeholder="Ej: Doble Estándar..."></textarea>
+    </div>
+
+    <div class="section">
+        <label>Datos de Pasajeros</label>
+        <textarea id="datosPax" rows="3" placeholder="Nombre, Apellido y Cédula..."></textarea>
+        
+        <div class="grid">
+            <div><label>Tlf Pax Líder</label><input type="text" id="telLider"></div>
+            <div><label>Tlf Acompañantes</label><textarea id="telAcomp" rows="2" placeholder="Números..."></textarea></div>
+        </div>
+        <label>Correo de Pasajeros</label>
+        <input type="text" id="correos" placeholder="ejemplo@mail.com">
+    </div>
+
+    <div class="section" style="border-left-color: #22c55e;">
+        <div class="grid-3">
+            <div><label>Total Hotel ($)</label><input type="number" id="costoHotel" oninput="calcularTodo()"></div>
+            <div><label>Total Boletos ($)</label><input type="number" id="costoBoletos" oninput="calcularTodo()"></div>
+            <div><label>Total Traslado ($)</label><input type="number" id="costoTraslado" oninput="calcularTodo()"></div>
+        </div>
+        
+        <div class="grid">
+            <div><label>Monto Extra ($)</label><input type="number" id="extraMonto" oninput="calcularTodo()"></div>
+            <div><label>Nombre del Extra</label><input type="text" id="extraNombre" placeholder="Ej: Tour"></div>
+        </div>
+
+        <div class="grid-3" style="margin-top:15px; border-top: 1px solid #eee; padding-top:10px;">
+            <div><label>TOTAL VENTA ($)</label><input type="text" id="totalVenta" class="auto-field" readonly></div>
+            <div><label>Abona ($)</label><input type="number" id="abona" oninput="calcularTodo()"></div>
+            <div><label>RESTA ($)</label><input type="text" id="resta" class="auto-field" readonly></div>
+        </div>
+
+        <div class="grid">
+            <div><label>Método de Pago</label><input type="text" id="metodo"></div>
+            <div><label>Tasa</label><input type="text" id="tasa"></div>
+        </div>
+        <label>Quién envía</label>
+        <input type="text" id="quienEnvio" placeholder="Andrés Rodríguez">
+    </div>
+
+    <div class="section" style="border-left-color: #ef4444;">
+        <label>Localizador Boletos aéreos</label>
+        <input type="text" id="loc" placeholder="X">
+        <label>Observaciones</label>
+        <textarea id="obs" rows="2" placeholder="Notas adicionales..."></textarea>
+    </div>
+
+    <button type="button" class="btn-gen" onclick="generarTodo()">✨ GENERAR AMBAS PLANTILLAS</button>
+
+    <h3>1. Información de Venta Realizada</h3>
+    <div class="output-box">
+        <button type="button" class="btn-copy" onclick="copiar('outputVenta')">Copiar</button>
+        <pre id="outputVenta">Los datos aparecerán aquí...</pre>
+    </div>
+
+    <h3>2. Solicitud de Reserva</h3>
+    <div class="output-box">
+        <button type="button" class="btn-copy" onclick="copiar('outputReserva')">Copiar</button>
+        <pre id="outputReserva">Los datos aparecerán aquí...</pre>
+    </div>
+
+    <div class="signature">gabx</div>
+</div>
+
+<script>
+    function calcularTodo() {
+        const h = parseFloat(document.getElementById('costoHotel').value) || 0;
+        const b = parseFloat(document.getElementById('costoBoletos').value) || 0;
+        const t = parseFloat(document.getElementById('costoTraslado').value) || 0;
+        const e = parseFloat(document.getElementById('extraMonto').value) || 0;
+        const a = parseFloat(document.getElementById('abona').value) || 0;
+        
+        const total = h + b + t + e;
+        const resta = total - a;
+
+        document.getElementById('totalVenta').value = total > 0 ? total.toFixed(2) : "";
+        document.getElementById('resta').value = total > 0 ? resta.toFixed(2) : "";
+    }
+
+    function formatearFecha(fechaStr) {
+        if (!fechaStr) return "-";
+        const partes = fechaStr.split("-");
+        return partes[2] + "/" + partes[1] + "/" + partes[0];
+    }
+
+    function generarTodo() {
+        const v = (id) => document.getElementById(id).value.trim() || "-";
+        const fIn = formatearFecha(document.getElementById('fechaIn').value);
+        const fOut = formatearFecha(document.getElementById('fechaOut').value);
+
+        let desglose = "";
+        const costs = [
+            { label: "*Total Hotel:*", val: parseFloat(document.getElementById('costoHotel').value) },
+            { label: "*Total por Traslado:*", val: parseFloat(document.getElementById('costoTraslado').value) },
+            { label: "*Total por Boletos:*", val: parseFloat(document.getElementById('costoBoletos').value) }
+        ];
+        costs.forEach(c => { if(c.val > 0) desglose += c.label + " " + c.val + "$\n"; });
+        if(parseFloat(v('extraMonto')) > 0) desglose += "*Total por " + v('extraNombre') + ":* " + v('extraMonto') + "$\n";
+
+        const venta = "*INFORMACION DE VENTA REALIZADA*\n\n" +
+            "*Hotel:* " + v('hotel').toUpperCase() + "\n\n" +
+            "*Número de cotización:* " + v('numCot') + "\n\n" +
+            "*Fecha IN:* " + fIn + "\n" +
+            "*Fecha Out:* " + fOut + "\n\n" +
+            "Número ADT: " + v('adt') + "\n" +
+            "Número CHD: " + v('chd') + "\n" +
+            "Número INF: " + v('inf') + "\n\n" +
+            "*Tipo de habitación*\n" + v('tipoHab') + "\n\n" +
+            "*DATOS DE PASAJEROS:*\n" + v('datosPax') + "\n\n" +
+            "•Número de Tlf Pax líder: " + v('telLider') + "\n\n" +
+            "•Número de Tlf acompañantes: *Campo obligatorio*\n" + v('telAcomp') + "\n\n" +
+            "•Correo de cada pasajero: " + v('correos') + "\n\n" +
+            "*TOTAL DE VENTA*: " + (v('totalVenta') === "-" ? "-" : v('totalVenta') + "$") + "\n\n" +
+            desglose + "\n" +
+            "*ABONA:* " + (parseFloat(document.getElementById('abona').value) || "-") + "$\n" +
+            "*RESTA:* " + (v('resta') === "-" ? "-" : v('resta') + "$") + "\n\n" +
+            "➡️Método de pago: " + v('metodo') + "\n" +
+            "➡️Quién envía: " + v('quienEnvio') + "\n" +
+            "➡️Tasa de abonos de hotel y otros: " + v('tasa') + "\n\n" +
+            "✈️ *Localizador Boletos aéreos:* " + v('loc') + "\n\n" +
+            "*OBSERVACIÓN:* " + v('obs');
+
+        const reserva = "Hola buenos días \n\n" +
+            "El presente es para solicitar la siguiente reserva:\n\n" +
+            "Hotel: " + v('hotel') + "\n\n" +
+            "Fecha IN: " + fIn + "\n" +
+            "Fecha Out: " + fOut + "\n\n" +
+            "Número ADT: " + v('adt') + "\n" +
+            "Número CHD: " + v('chd') + "\n" +
+            "Número INF: " + v('inf') + "\n\n" +
+            "Tipo de habitación:\n" + v('tipoHab') + "\n\n" +
+            "DATOS DE PASAJEROS: \n\n" + v('datosPax') + "\n\n" +
+            "De antemano gracias \n\n" + "Saludos cordiales";
+
+        document.getElementById('outputVenta').innerText = venta;
+        document.getElementById('outputReserva').innerText = reserva;
+    }
+
+    function copiar(id) {
+        const text = document.getElementById(id).innerText;
+        if (text.includes("aparecerán aquí")) return;
+        navigator.clipboard.writeText(text);
+        alert("¡Copiado!");
+    }
+</script>
+</body>
+</html>
