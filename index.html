@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADN Travels - Control Center v2.0</title>
+    <style>
+        /* Definición de Keyframes para Animaciones */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        @keyframes statusPulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes buttonHover {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.03); }
+        }
+
+        /* Estilos Base actualizados */
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #f0f4f8; 
+            padding: 20px; 
+            margin: 0;
+            color: #1e293b;
+            opacity: 0;
+            animation: fadeInDown 0.6s ease-out forwards;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container { 
+            max-width: 800px; 
+            margin: 20px auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            border-top: 10px solid #003366; 
+            position: relative; 
+            overflow: hidden;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Barra superior con Modo Oscuro y Links */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-dark {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-dark:hover { background: #1e293b; transform: translateY(-2px); }
+
+        .btn-link { 
+            text-decoration: none; 
+            background: #22c55e; 
+            color: white; 
+            padding: 10px 18px; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            font-size: 14px; 
+            display: inline-block; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            transition: all 0.3s ease; 
+        }
+        .btn-link:hover { 
+            background: #16a34a; 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .btn-voucher {
+            background: #0ea5e9;
+        }
+        .btn-voucher:hover {
+            background: #0284c7;
+        }
+
+        .header-title { 
+            color: #003366; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 15px; 
+            margin-bottom: 5px; 
+            font-weight: 800; 
+            letter-spacing: -1px; 
+            font-size: 2.2em;
+            transition: color 0.3s ease;
+        }
+        .brand-badge { 
+            background: #003366; 
+            color: white; 
+            padding: 4px 16px; 
+            border-radius: 10px; 
+            font-size: 0.8em; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease;
+        }
+        .status-bar { 
+            text-align: center; 
+            font-size: 13px; 
+            font-weight: 700; 
+            color: #16a34a; 
+            margin-top: 0; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            margin-bottom: 30px; 
+        }
+        .dot { 
+            display: inline-block; 
+            width: 10px; 
+            height: 10px; 
+            background-color: #22c55e; 
+            border-radius: 50%; 
+            margin-right: 8px; 
+            animation: statusPulse 1.5s infinite; 
+            vertical-align: middle;
+        }
+        
+        h3 { 
+            color: #003366; 
+            border-bottom: 3px solid #003366; 
+            padding-bottom: 8px; 
+            margin-top: 35px; 
+            font-weight: 700;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        /* Secciones */
+        .section { 
+            margin-bottom: 20px; 
+            padding: 20px; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 12px; 
+            background: #fff; 
+            border-left: 6px solid #003366; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+            animation: fadeInUp 0.5s ease-out both;
+        }
+        .section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.3s; }
+        .section:nth-child(5) { animation-delay: 0.4s; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        
+        /* Formularios */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 14px; color: #475569; transition: color 0.3s ease; }
+        input, textarea, select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-family: inherit; 
+            font-size: 15px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #003366;
+            box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+        }
+        .auto-field { background-color: #f0f7ff; font-weight: bold; color: #003366; border: 1px solid #003366; }
+        
+        /* Botones */
+        button { 
+            padding: 15px; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            font-size: 16px; 
+            width: 100%; 
+            margin-top: 20px; 
+            letter-spacing: 0.5px;
+        }
+        .btn-gen { 
+            background: #003366; 
+            color: white; 
+            box-shadow: 0 4px 15px rgba(0, 51, 102, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-gen:hover { 
+            background: #002244; 
+            box-shadow: 0 6px 20px rgba(0, 51, 102, 0.3);
+            animation: buttonHover 0.3s ease-in-out forwards;
+        }
+        .btn-gen:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-copy { 
+            background: #64748b; 
+            color: white; 
+            font-size: 12px; 
+            padding: 8px 15px; 
+            width: auto; 
+            float: right; 
+            margin: 0; 
+            border-radius: 6px;
+        }
+        .btn-copy:hover { background: #475569; }
+        
+        .btn-add { background: #22c55e; color: white; width: 42px; height: 42px; margin-top: 0; padding: 0; font-size: 22px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn-add:hover { background: #16a34a; transform: scale(1.05); }
+        
+        .btn-del { background: #ef4444; color: white; width: 42px; height: 42px; margin-top: 0; padding: 0; font-size: 22px; border-radius: 8px; }
+        .btn-del:hover { background: #dc2626; transform: scale(1.05); }
+        
+        /* Cajas de Salida */
+        .output-box { 
+            margin-top: 20px; 
+            padding: 20px; 
+            background: #f8fafc; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 12px; 
+            position: relative; 
+            transition: all 0.3s ease;
+        }
+        .output-box.generated {
+            border-color: #22c55e;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.1);
+            animation: pulse 1.5s;
+        }
+        pre { 
+            white-space: pre-wrap; 
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace; 
+            font-size: 14px; 
+            margin: 15px 0 0 0; 
+            color: #1e293b; 
+            line-height: 1.6; 
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        .signature { text-align: right; font-size: 13px; color: #94a3b8; margin-top: 30px; font-style: italic; }
+
+        /* ==================== MODO OSCURO (DARK MODE) ==================== */
+        body.dark-mode { background-color: #0f172a; color: #f1f5f9; }
+        body.dark-mode .container { background: #1e293b; border-top-color: #38bdf8; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        body.dark-mode .section { background: #0f172a; border-color: #334155; }
+        body.dark-mode h1, body.dark-mode h3 { color: #38bdf8; border-bottom-color: #38bdf8; }
+        body.dark-mode .header-title { color: #f1f5f9; }
+        body.dark-mode .brand-badge { background: #38bdf8; color: #0f172a; }
+        body.dark-mode label { color: #cbd5e1; }
+        body.dark-mode input, body.dark-mode textarea, body.dark-mode select { background: #1e293b; color: #f1f5f9; border-color: #475569; }
+        body.dark-mode input:focus, body.dark-mode textarea:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
+        body.dark-mode .auto-field { background-color: #334155; border-color: #38bdf8; color: #38bdf8; }
+        body.dark-mode .output-box { background: #0f172a; border-color: #334155; }
+        body.dark-mode pre { background: #1e293b; color: #f1f5f9; border-color: #334155; }
+        body.dark-mode .btn-gen { background: #0ea5e9; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.2); }
+        body.dark-mode .btn-gen:hover { background: #0284c7; }
+        body.dark-mode .btn-dark { background: #f1f5f9; color: #0f172a; }
+        body.dark-mode .btn-dark:hover { background: #cbd5e1; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-bar">
+        <button onclick="toggleDarkMode()" class="btn-dark" id="darkModeBtn">🌙 Modo Oscuro</button>
+        <div class="nav-links">
+            <a href="https://rosesxd.github.io/voucher/" target="_blank" class="btn-link btn-voucher">🎫 Ir a Voucher</a>
+            <a href="https://rosesxd.github.io/-HDTSL1/" target="_blank" class="btn-link">🚐 Ir a Traslados</a>
+        </div>
+    </div>
+
+    <h1 class="header-title"><span class="brand-badge">ADN</span> Travels Control Center 🚀</h1>
+    <p class="status-bar"><span class="dot"></span> Sistema de Gestión de Reservas Activo</p>
+
+    <div class="section">
+        <div class="form-group">
+            <label>Hotel / Servicio</label>
+            <input type="text" id="hotel" placeholder="Nombre del Hotel (ej: Hesperia Isla Margarita)">
+        </div>
+        
+        <div class="form-group">
+            <label>Modalidad (Opcional)</label>
+            <input type="text" id="modalidad" placeholder="Ej: Todo Incluido">
+        </div>
+        
+        <div class="form-group">
+            <label>Ruta (Si aplica)</label>
+            <input type="text" id="ruta" placeholder="Ej: CCS-PMV-CCS">
+        </div>
+
+        <div class="form-group">
+            <label>Número de cotización</label>
+            <input type="text" id="numCot" placeholder="Ej: 2026011250537">
+        </div>
+        
+        <div class="grid">
+            <div class="form-group"><label>Fecha IN</label><input type="date" id="fechaIn"></div>
+            <div class="form-group"><label>Fecha OUT</label><input type="date" id="fechaOut"></div>
+        </div>
+        <div class="grid-3">
+            <div class="form-group"><label>ADT</label><input type="text" id="adt" placeholder="Cant."></div>
+            <div class="form-group"><label>CHD</label><input type="text" id="chd" placeholder="Cant."></div>
+            <div class="form-group"><label>INF</label><input type="text" id="inf" placeholder="Cant."></div>
+        </div>
+        <div class="form-group">
+            <label>Tipo de Habitación</label>
+            <textarea id="tipoHab" rows="2" placeholder="Ej: Doble Estándar con vista al mar..."></textarea>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="form-group">
+            <label>Datos de Pasajeros (Nombre, Apellido, Cédula/Pasaporte)</label>
+            <textarea id="datosPax" rows="4" placeholder="1. Juan Pérez, V-12.345.678&#10;2. María Gómez, P-987654..."></textarea>
+        </div>
+        <div class="grid">
+            <div class="form-group"><label>Tlf Pax Líder</label><input type="text" id="telLider" placeholder="Ej: +58 412..."></div>
+            <div class="form-group"><label>Tlf Acompañantes</label><textarea id="telAcomp" rows="2" placeholder="Otros números..."></textarea></div>
+        </div>
+        <div class="form-group">
+            <label>Correo de Pasajeros</label>
+            <input type="text" id="correos" placeholder="ejemplo1@mail.com, ejemplo2@mail.com">
+        </div>
+    </div>
+
+    <div class="section" style="border-left-color: #22c55e;">
+        <div class="grid-3">
+            <div class="form-group"><label>Total Hotel ($)</label><input type="number" id="costoHotel" oninput="calcularTodo()" placeholder="0.00"></div>
+            <div class="form-group"><label>Total Boletos ($)</label><input type="number" id="costoBoletos" oninput="calcularTodo()" placeholder="0.00"></div>
+            <div class="form-group"><label>Total Traslado ($)</label><input type="number" id="costoTraslado" oninput="calcularTodo()" placeholder="0.00"></div>
+        </div>
+
+        <div id="extras-container"></div>
+        <div style="text-align: right; margin-top: 10px;">
+            <button type="button" class="btn-add" onclick="agregarExtra()" title="Agregar Costo Extra">+</button>
+        </div>
+
+        <div class="grid-3" style="margin-top:20px; border-top: 2px solid #e2e8f0; padding-top:15px;">
+            <div class="form-group"><label>TOTAL VENTA ($)</label><input type="text" id="totalVenta" class="auto-field" readonly></div>
+            <div class="form-group"><label>Abona ($)</label><input type="number" id="abona" oninput="calcularTodo()" placeholder="0.00"></div>
+            <div class="form-group"><label>RESTA ($)</label><input type="text" id="resta" class="auto-field" readonly></div>
+        </div>
+        <div class="grid">
+            <div class="form-group"><label>Método de Pago</label><input type="text" id="metodo" placeholder="Ej: Zelle, Banesco Panamá..."></div>
+            <div class="form-group"><label>Tasa Cambiaria (Si aplica)</label><input type="text" id="tasa" placeholder="Ej: 36.50 Bs/$"></div>
+        </div>
+        <div class="form-group">
+            <label>Quién envía</label>
+            <input type="text" id="quienEnvio" value="">
+        </div>
+    </div>
+
+    <div class="section" style="border-left-color: #ef4444;">
+        <div class="form-group">
+            <label>Localizador Boletos aéreos (PNR)</label>
+            <input type="text" id="loc" placeholder="Ej: YXJ4PQ">
+        </div>
+        <div class="form-group">
+            <label>Observaciones Especiales</label>
+            <textarea id="obs" rows="3" placeholder="Notas adicionales, requerimientos especiales..."></textarea>
+        </div>
+    </div>
+
+    <button type="button" class="btn-gen" onclick="generarTodo()">✨ GENERAR PLANTILLAS </button>
+
+    <h3>1. Información de Venta Realizada</h3>
+    <div class="output-box" id="boxVenta">
+        <button type="button" class="btn-copy" onclick="copiar('outputVenta')">Copiar</button>
+        <pre id="outputVenta">Los datos generados aparecerán aquí...</pre>
+    </div>
+
+    <h3>2. Solicitud de Reserva</h3>
+    <div class="output-box" id="boxReserva">
+        <button type="button" class="btn-copy" onclick="copiar('outputReserva')">Copiar</button>
+        <pre id="outputReserva">Los datos generados aparecerán aquí...</pre>
+    </div>
+
+    <div class="signature">v2.0 | gabx</div>
+</div>
+
+<script>
+    window.onload = function() {
+        document.body.style.opacity = 1;
+        // Revisar si ya estaba en modo oscuro (opcional si quieres guardar la preferencia)
+        if (localStorage.getItem('darkMode') === 'true') {
+            toggleDarkMode();
+        }
+    };
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const btn = document.getElementById('darkModeBtn');
+        if (document.body.classList.contains('dark-mode')) {
+            btn.innerText = '☀️ Modo Claro';
+            localStorage.setItem('darkMode', 'true');
+        } else {
+            btn.innerText = '🌙 Modo Oscuro';
+            localStorage.setItem('darkMode', 'false');
+        }
+    }
+
+    function agregarExtra() {
+        const container = document.getElementById('extras-container');
+        const div = document.createElement('div');
+        div.className = 'grid';
+        div.style.alignItems = 'center';
+        div.style.marginTop = '15px';
+        div.style.animation = 'fadeInUp 0.3s ease-out';
+        
+        div.innerHTML = `
+            <div class="form-group" style="margin:0;">
+                <label>Monto Extra ($)</label>
+                <input type="number" class="extra-monto" oninput="calcularTodo()" placeholder="0.00">
+            </div>
+            <div class="form-group" style="margin:0;">
+                <label>Nombre del Extra</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="text" class="extra-nombre" placeholder="Ej: Tour Full Day">
+                    <button type="button" class="btn-del" onclick="eliminarExtra(this)" title="Eliminar Extra">-</button>
+                </div>
+            </div>
+        `;
+        container.appendChild(div);
+    }
+
+    function eliminarExtra(button) {
+        const row = button.closest('.grid');
+        row.remove();
+        calcularTodo();
+    }
+
+    function calcularTodo() {
+        const h = parseFloat(document.getElementById('costoHotel').value) || 0;
+        const b = parseFloat(document.getElementById('costoBoletos').value) || 0;
+        const t = parseFloat(document.getElementById('costoTraslado').value) || 0;
+        const a = parseFloat(document.getElementById('abona').value) || 0;
+        
+        let extrasSum = 0;
+        document.querySelectorAll('.extra-monto').forEach(input => {
+            extrasSum += parseFloat(input.value) || 0;
+        });
+
+        const total = h + b + t + extrasSum;
+        const resta = total - a;
+
+        document.getElementById('totalVenta').value = total > 0 ? total.toFixed(2) : "";
+        document.getElementById('resta').value = total > 0 ? resta.toFixed(2) : "";
+    }
+
+    function formatearFecha(fechaStr) {
+        if (!fechaStr) return "-";
+        const partes = fechaStr.split("-");
+        return partes[2] + "/" + partes[1] + "/" + partes[0];
+    }
+
+    function generarTodo() {
+        const v = (id) => document.getElementById(id).value.trim() || "-";
+        const fIn = formatearFecha(document.getElementById('fechaIn').value);
+        const fOut = formatearFecha(document.getElementById('fechaOut').value);
+
+        const hotelVal = document.getElementById('hotel').value.trim();
+        const modVal = document.getElementById('modalidad').value.trim();
+        
+        // Formato para Hotel y Modalidad
+        let hotelSection = "*Hotel:* " + (hotelVal ? hotelVal.toUpperCase() : "-") + "\n";
+        if (modVal) {
+            hotelSection += "Modalidad: " + modVal + "\n";
+        }
+
+        const rutaVal = document.getElementById('ruta').value.trim();
+        const rutaLinea = rutaVal ? "*Ruta:* " + rutaVal.toUpperCase() + "\n\n" : "";
+
+        let desglose = "";
+        const hVal = parseFloat(document.getElementById('costoHotel').value) || 0;
+        const bVal = parseFloat(document.getElementById('costoBoletos').value) || 0;
+        const tVal = parseFloat(document.getElementById('costoTraslado').value) || 0;
+
+        if (hVal > 0) desglose += `*Total Hotel:* ${hVal}$\n`;
+        if (tVal > 0) desglose += `*Total por Traslado:* ${tVal}$\n`;
+        if (bVal > 0) desglose += `*Total por Boletos:* ${bVal}$\n`;
+
+        document.querySelectorAll('#extras-container .grid').forEach(row => {
+            const monto = parseFloat(row.querySelector('.extra-monto').value) || 0;
+            const nombre = row.querySelector('.extra-nombre').value || "Extra";
+            if (monto > 0) desglose += `*Total por ${nombre}:* ${monto}$\n`;
+        });
+
+        const venta = "*INFORMACION DE VENTA REALIZADA*\n\n" +
+            hotelSection + "\n" +
+            rutaLinea + 
+            "*Número de cotización:* " + v('numCot') + "\n\n" +
+            "*Fecha IN:* " + fIn + "\n" +
+            "*Fecha Out:* " + fOut + "\n\n" +
+            "Número ADT: " + v('adt') + "\n" +
+            "Número CHD: " + v('chd') + "\n" +
+            "Número INF: " + v('inf') + "\n\n" +
+            "*Tipo de habitación*\n" + v('tipoHab') + "\n\n" +
+            "*DATOS DE PASAJEROS:*\n" + v('datosPax') + "\n\n" +
+            "•Número de Tlf Pax líder: " + v('telLider') + "\n\n" +
+            "•Número de Tlf acompañantes:\n" + v('telAcomp') + "\n\n" +
+            "•Correo de cada pasajero: " + v('correos') + "\n\n" +
+            "*TOTAL DE VENTA*: " + (v('totalVenta') === "-" ? "0.00" : v('totalVenta')) + "$\n\n" +
+            desglose + "\n" +
+            "*ABONA:* " + (parseFloat(document.getElementById('abona').value) || "0.00") + "$\n" +
+            "*RESTA:* " + (v('resta') === "-" ? "0.00" : v('resta')) + "$\n\n" +
+            "➡️Método de pago: " + v('metodo') + "\n" +
+            "➡️Quién envía: " + v('quienEnvio') + "\n" +
+            "➡️Tasa: " + v('tasa') + "\n\n" +
+            "✈️ *Localizador Boletos aéreos:* " + v('loc') + "\n\n" +
+            "*OBSERVACIÓN:* " + v('obs');
+
+        const reserva = "Hola buenos días \n\n" +
+            "El presente es para solicitar la siguiente reserva:\n\n" +
+            hotelSection + "\n" + 
+            "Fecha IN: " + fIn + "\n" +
+            "Fecha Out: " + fOut + "\n\n" +
+            "Número ADT: " + v('adt') + "\n" +
+            "Número CHD: " + v('chd') + "\n" +
+            "Número INF: " + v('inf') + "\n\n" +
+            "Tipo de habitación:\n" + v('tipoHab') + "\n\n" +
+            "DATOS DE PASAJEROS: \n\n" + v('datosPax') + "\n\n" +
+            "De antemano gracias \n\n" + "Saludos cordiales";
+
+        document.getElementById('outputVenta').innerText = venta;
+        document.getElementById('outputReserva').innerText = reserva;
+        
+        document.getElementById('boxVenta').classList.add('generated');
+        document.getElementById('boxReserva').classList.add('generated');
+        
+        setTimeout(() => {
+            document.getElementById('boxVenta').classList.remove('generated');
+            document.getElementById('boxReserva').classList.remove('generated');
+        }, 1500);
+    }
+
+    function copiar(id) {
+        const text = document.getElementById(id).innerText;
+        if (text.includes("aparecerán aquí")) return;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.querySelector(`#${id}`).parentElement.querySelector('.btn-copy');
+            const originalText = btn.innerText;
+            btn.innerText = "¡Copiado!";
+            btn.style.background = "#22c55e";
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = "#64748b";
+            }, 1500);
+        });
+    }
+</script>
+</body>
+</html>
